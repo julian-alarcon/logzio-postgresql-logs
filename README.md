@@ -109,3 +109,9 @@ docker run -d \
 ## About Logz.io
 
 [Logz.io](https://logz.io) combines open source log analytics and behavioural learning intelligence to pinpoint what’s actually important
+
+***
+
+## Credits
+
+Based on original work from Logz.io people to ship [from MySQL to Logzio](https://github.com/logzio/logzio-mysql-logs) and in [Sebastian Martinka's branch](https://github.com/Mortinke/logzio-mysql-logs/tree/postgres-support).
