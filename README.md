@@ -1,8 +1,10 @@
 # logzio-postgresql-logs
 
+[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/alarconj/postgresql-logs)](https://hub.docker.com/r/alarconj/postgresql-logs)
+
 =========================
 
-It will check every 60 seconds the log file. You can define 
+It will check every 60 seconds the log file. You can define adifferent value.
 
 [Docker hub repository](https://hub.docker.com/r/alarconj/postgresql-logs/)
 
