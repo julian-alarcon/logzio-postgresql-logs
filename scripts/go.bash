@@ -30,8 +30,8 @@ if ! [[ -z $AWS_ACCESS_KEY && -z $AWS_SECRET_KEY ]]; then
   fi
 
   # if present set the rds filebeat yaml config
-  if [[ -f /root/filebeat-rds.ymal ]]; then
-    cp -f /root/filebeat-rds.ymal $FILEBEAT_CONF
+  if [[ -f /root/filebeat-rds.yml ]]; then
+    cp -f /root/filebeat-rds.yml $FILEBEAT_CONF
   fi
 
   # configure monitoring RDS logs
@@ -39,11 +39,10 @@ if ! [[ -z $AWS_ACCESS_KEY && -z $AWS_SECRET_KEY ]]; then
 fi
 
 # print the env vars
-env 
+env
 
-# run and monitor MySQL logs
+# run and monitor PostgreSQL logs
 run
 
 # stop service
 cleanup
-
