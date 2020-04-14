@@ -1,0 +1,53 @@
+############################# Filebeat #####################################
+
+filebeat.inputs:
+- type: log
+  paths:
+    - "${POSTGRESQL_LOG_FILE}*"
+  fields:
+    logzio_codec: plain
+    token: ${LOGZIO_TOKEN}
+    type: postgresql
+    awsaccount: ${AWS_ACCOUNT}
+    client_lf: ${CLIENT_LF}
+    environment_lf: ${ENVIRONMENT_LF}
+    server_name: ${RDS_IDENTIFIER}
+    app: postgresql
+  fields_under_root: true
+  ignore_older: 3h
+  tail_files: true
+
+#For version 6.x and lower
+#filebeat.registry_file: /var/lib/filebeat/registry
+
+#For version 7 and higher
+filebeat.registry.path: /var/lib/filebeat
+
+#The following processors are to ensure compatibility with version 7
+processors:
+- rename:
+    fields:
+     - from: "agent"
+       to: "beat_agent"
+    ignore_missing: true
+- rename:
+    fields:
+     - from: "log.file.path"
+       to: "source"
+    ignore_missing: true
+
+############################# Output ##########################################
+
+output:
+  logstash:
+    hosts: ["${LOGZIO_LISTENER}:5015"]
+    ssl:
+      certificate_authorities: ['/etc/pki/tls/certs/COMODORSADomainValidationSecureServerCA.crt']
+logging:
+  to_files: true
+  files:
+    path: /var/log/logzio/
+    name: filebeat.log
+    rotateeverybytes: 10485760
+    keepfiles: 2
+  level: warning

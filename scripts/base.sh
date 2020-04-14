@@ -23,16 +23,9 @@ export PID_DIR=/run/logzio
 export PID_FILE=$PID_DIR/sql-logs.pid
 
 # PostgreSQL log files defaults
-if [[ -z $POSTGRESQL_ERROR_LOG_FILE ]]; then
-    export POSTGRESQL_ERROR_LOG_FILE=$POSTGRESQL_LOGS_DIR/error.log
-fi
 
 if [[ -z $POSTGRESQL_LOG_FILE ]]; then
     export POSTGRESQL_LOG_FILE=$POSTGRESQL_LOGS_DIR/postgresql.log
-fi
-
-if [[ -z $POSTGRESQL_SLOW_LOG_FILE ]]; then
-    export POSTGRESQL_SLOW_LOG_FILE=$POSTGRESQL_LOGS_DIR/postgresql-slow.log
 fi
 
 # Setup dependencies
@@ -45,7 +38,7 @@ function usage {
     echo
     echo "Usage:"
 	echo docker run -d --name logzio-postgresql-logs -e LOGZIO_TOKEN=VALUE [-e LOGZIO_LISTENER=VALUE] \
-                    [-e POSTGRESQL_ERROR_LOG_FILE=VALUE] [-e POSTGRESQL_SLOW_LOG_FILE=VALUE] [-e POSTGRESQL_LOG_FILE=VALUE] \
+                    [-e POSTGRESQL_LOG_FILE=VALUE] \
                     -v path_to_directory:/var/log/logzio -v path_to_directory:/var/log/postgresql \
                     logzio/postgresql-logs:latest
 	echo
@@ -53,7 +46,7 @@ function usage {
     echo "RDS Usage:"
     echo docker run -d --name logzio-postgresql-logs -e LOGZIO_TOKEN=VALUE [-e LOGZIO_LISTENER=VALUE] \
                     -e AWS_ACCESS_KEY=VALUE -e AWS_SECRET_KEY=VALUE -e AWS_REGION=VALUE -e RDS_IDENTIFIER=VALUE \
-                    [-e RDS_ERROR_LOG_FILE=VALUE] [-e RDS_SLOW_LOG_FILE=VALUE] [-e RDS_LOG_FILE=VALUE] \
+                    [-e RDS_LOG_FILE=VALUE] \
                     -v path_to_directory:/var/log/logzio -v path_to_directory:/var/log/postgresql \
                     logzio/postgresql-logs:latest
     echo
@@ -110,16 +103,6 @@ function configure_rds() {
         monitoring="$RDS_LOG_FILE"
     fi
 
-    if [[ ! -z $RDS_SLOW_LOG_FILE ]]; then
-        touch $POSTGRESQL_SLOW_LOG_FILE
-        monitoring="$monitoring $RDS_SLOW_LOG_FILE"
-    fi
-
-    if [[ ! -z $RDS_ERROR_LOG_FILE ]]; then
-        touch $POSTGRESQL_ERROR_LOG_FILE
-        monitoring="$monitoring $RDS_ERROR_LOG_FILE"
-    fi
-
     SHIP_RDS="true"
     log "INFO" "Monitor RDS files: $monitoring"
 }
@@ -138,24 +121,6 @@ function sync_rds() {
         diff $HOURLY_POSTGRESQL_LOG_FILE /tmp/postgresql.log | grep '>' | cut -c 3- >> $HOURLY_POSTGRESQL_LOG_FILE
     fi
 
-    # if the user configured the rds slow log file ... sync it
-    if [[ ! -z $RDS_SLOW_LOG_FILE ]]; then
-        aws rds download-db-log-file-portion --db-instance-identifier $RDS_IDENTIFIER --output text --log-file-name $RDS_SLOW_LOG_FILE.$HOUR > /tmp/postgresql-slow.log 2>> $ERROR_LOG_FILE
-
-        HOURLY_POSTGRESQL_SLOW_LOG_FILE="$POSTGRESQL_SLOW_LOG_FILE-$HOUR"
-
-        diff $HOURLY_POSTGRESQL_SLOW_LOG_FILE /tmp/postgresql-slow.log | grep '>' | cut -c 3- >> $HOURLY_POSTGRESQL_SLOW_LOG_FILE
-    fi
-
-    # if the user configured the rds error log file ... sync it
-    if [[ ! -z $RDS_ERROR_LOG_FILE ]]; then
-        aws rds download-db-log-file-portion --db-instance-identifier $RDS_IDENTIFIER --output text --log-file-name $RDS_ERROR_LOG_FILE.$HOUR > /tmp/error.log 2>> $ERROR_LOG_FILE
-
-        HOURLY_POSTGRESQL_ERROR_LOG_FILE="$POSTGRESQL_ERROR_LOG_FILE-$HOUR"
-
-        diff $HOURLY_POSTGRESQL_ERROR_LOG_FILE /tmp/error.log | grep '>' | cut -c 3- >> $HOURLY_POSTGRESQL_ERROR_LOG_FILE
-    fi
-
     # delete old files
     find $POSTGRESQL_LOGS_DIR -type f -mmin +3 -delete
 }
@@ -165,8 +130,6 @@ function sync_rds() {
 # Restart Filebeat
 # ----------------------------------------
 function restart_filebeat() {
-    log "INFO" "POSTGRESQL_ERROR_LOG_FILE: $POSTGRESQL_ERROR_LOG_FILE"
-    log "INFO" "POSTGRESQL_SLOW_LOG_FILE: $POSTGRESQL_SLOW_LOG_FILE"
     log "INFO" "POSTGRESQL_LOG_FILE: $POSTGRESQL_LOG_FILE"
     log "INFO" "LOGZIO_TOKEN: $LOGZIO_TOKEN"
     log "INFO" "LOGZIO_LISTENER: $LOGZIO_LISTENER"

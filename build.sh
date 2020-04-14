@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export TAG="logzio/postgresql-logs:latest"
+export TAG="alarconj/postgresql-logs:latest"
 
 docker build -t $TAG ./
 
