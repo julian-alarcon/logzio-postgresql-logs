@@ -1,7 +1,7 @@
 FROM ubuntu:20.04
 
 LABEL maintainer="alarconj@gmail.com" \
-      version="0.9" \
+      version="1.0" \
       description="Container to export PostgreSQL/RDS PostgreSQL logs to Logzio/Logstash"
 
 ENV LOGZIO_LOGS_DIR /var/log/logzio
