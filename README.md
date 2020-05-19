@@ -4,7 +4,7 @@
 
 =========================
 
-It will check every 60 seconds the log file. You can define adifferent value.
+It will check every 60 seconds the log file. You can define a different value.
 
 [Docker hub repository](https://hub.docker.com/r/alarconj/postgresql-logs/)
 
