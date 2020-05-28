@@ -22,7 +22,7 @@ RUN pip3 install awscli
 
 RUN curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.6.2-amd64.deb && dpkg -i filebeat-7.6.2-amd64.deb
 RUN mkdir -p /etc/pki/tls/certs
-RUN wget https://raw.githubusercontent.com/logzio/public-certificates/master/COMODORSADomainValidationSecureServerCA.crt -P /etc/pki/tls/certs
+RUN wget https://raw.githubusercontent.com/logzio/public-certificates/master/TrustExternalCARoot_and_USERTrustRSAAAACA.crt -P /etc/pki/tls/certs
 
 RUN mkdir -p $POSTGRESQL_LOGS_DIR
 RUN mkdir -p $LOGZIO_LOGS_DIR
