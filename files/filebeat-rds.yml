@@ -45,7 +45,7 @@ output:
   logstash:
     hosts: ["${LOGZIO_LISTENER}:5015"]
     ssl:
-      certificate_authorities: ['/etc/pki/tls/certs/COMODORSADomainValidationSecureServerCA.crt']
+      certificate_authorities: ['/etc/pki/tls/certs/TrustExternalCARoot_and_USERTrustRSAAAACA.crt']
 logging:
   to_files: true
   files:
