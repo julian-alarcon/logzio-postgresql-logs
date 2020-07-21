@@ -1,6 +1,6 @@
-on: [push, create]
 
 name: Create Release
+on: [push, create]
 
 jobs:
   build:
@@ -12,14 +12,23 @@ jobs:
       - name: Get short SHA
         id: slug
         run: echo "::set-output name=sha8::$(echo ${GITHUB_SHA} | cut -c1-8)"
+      - name: Get version values
+        id: branch_name
+        run: |
+          echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
+          echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
+          echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          SOURCE_NAME: ${{ steps.branch_name.outputs.SOURCE_NAME }}
+          SOURCE_BRANCH: ${{ steps.branch_name.outputs.SOURCE_BRANCH }}
+          SOURCE_TAG: ${{ steps.branch_name.outputs.SOURCE_TAG }}
         with:
-          tag_name: v${GITHUB_REF##*/}-${{ steps.slug.outputs.sha8 }}
-          release_name: Release v${GITHUB_REF##*/}-${{ steps.slug.outputs.sha8 }}
+          tag_name: v${GITHUB_REF#refs/heads/}-${{ steps.slug.outputs.sha8 }}
+          release_name: Release v${GITHUB_REF#refs/heads/}-${{ steps.slug.outputs.sha8 }}
           body: |
             Changes in this Release
             - A new change
