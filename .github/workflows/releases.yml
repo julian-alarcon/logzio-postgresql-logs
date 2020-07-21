@@ -1,4 +1,4 @@
-on: [push, pull_request, create]
+on: [push, create]
 
 name: Create Release
 
@@ -18,11 +18,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: v${{ github.ref }}-${{ steps.slug.outputs.sha8 }}
-          release_name: Release v${{ github.ref }}-${{ steps.slug.outputs.sha8 }}
+          tag_name: v${GITHUB_REF##*/}-${{ steps.slug.outputs.sha8 }}
+          release_name: Release v${GITHUB_REF##*/}-${{ steps.slug.outputs.sha8 }}
           body: |
             Changes in this Release
-            - First Change
-            - Second Change
+            - A new change
+            - A second new Change
           draft: false
           prerelease: false
