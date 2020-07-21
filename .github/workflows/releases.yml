@@ -24,5 +24,6 @@ jobs:
             Changes in this Release
             - A new change
             - A second new Change
+            - Test 3
           draft: false
           prerelease: false
