@@ -27,8 +27,8 @@ jobs:
           SOURCE_BRANCH: ${{ steps.branch_name.outputs.SOURCE_BRANCH }}
           SOURCE_TAG: ${{ steps.branch_name.outputs.SOURCE_TAG }}
         with:
-          tag_name: v${GITHUB_REF#refs/heads/}-${{ steps.slug.outputs.sha8 }}
-          release_name: Release v${GITHUB_REF#refs/heads/}-${{ steps.slug.outputs.sha8 }}
+          tag_name: v${SOURCE_BRANCH}-${{ steps.slug.outputs.sha8 }}
+          release_name: Release v${SOURCE_BRANCH}-${{ steps.slug.outputs.sha8 }}
           body: |
             Changes in this Release
             - A new change
