@@ -27,8 +27,7 @@ jobs:
           SOURCE_BRANCH: ${{ steps.branch_name.outputs.SOURCE_BRANCH }}
           SOURCE_TAG: ${{ steps.branch_name.outputs.SOURCE_TAG }}
         with:
-          tag_name: v${{ env.SOURCE_BRANCH }}-${{ steps.slug.outputs.sha8 }}
-          release_name: Release v${{ env.SOURCE_BRANCH }}-${{ steps.slug.outputs.sha8 }}
+          release_name: ${{ env.SOURCE_BRANCH }}-${{ steps.slug.outputs.sha8 }}
           body: |
             Changes in this Release
             - A new change
