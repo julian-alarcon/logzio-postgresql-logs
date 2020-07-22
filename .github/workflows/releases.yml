@@ -26,8 +26,8 @@ jobs:
           SOURCE_TAG: ${{ steps.branch_name.outputs.SOURCE_TAG }}
           GIT_COMMIT: ${{ github.sha }}
         with:
-          tag_name: ${{ env.SOURCE_BRANCH }}-${{ env.GITHUB_SHA }}
-          release_name: ${{ env.SOURCE_BRANCH }}-${{ env.GITHUB_SHA }}
+          tag_name: ${{ env.SOURCE_BRANCH }}-${{ GITHUB_SHA }}
+          release_name: ${{ env.SOURCE_BRANCH }}-${{ GITHUB_SHA }}
           body: |
             Changes in this Release
             - Added automatic release creation by push to a branch
