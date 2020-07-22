@@ -1,7 +1,10 @@
 FROM ubuntu:20.04
-
+ARG revision
+ARG version
+RUN echo $revision > /revision.txt
+RUN echo $version > /version.txt
 LABEL maintainer="alarconj@gmail.com" \
-      version="1.1" \
+      version=$version \
       description="Container to export PostgreSQL/RDS PostgreSQL logs to Logzio/Logstash"
 
 ENV LOGZIO_LOGS_DIR /var/log/logzio
